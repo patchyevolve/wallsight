@@ -1,0 +1,88 @@
+# WALLSIGHT — Team Plan & Sign-off (Round 1)
+
+**Event:** LT HackFest 2026 (International, online) — Round 1 submission **Aug 13–15**
+**Team:** 3 (you, ML guy, Frontend guy) · Team name: **WallSight**
+**Repo:** https://github.com/patchyevolve/wallsight
+**Deadline chain:** boards ordered **Aug 5 (today, 2 PM IST cutoff)** → boxes streaming **Aug 8** → end-to-end **Aug 10** → video recorded **Aug 12** → submit **Aug 13–15**
+
+---
+
+## 1. What we're building (60 seconds)
+
+WallSight is a **camera-free care-home monitoring system**: 3 plug-in WiFi boxes (~₹500 each) read the home's own WiFi signals (CSI — Channel State Information) to detect **presence, motion, falls-risk patterns, breathing, and user-configured zones** through walls. No camera, no mic, no wearable, nothing required from the person being monitored.
+
+**The differentiator: zones.** The user (care-home operator / family) draws their room on a setup wizard, drops node icons, sees a live **coverage map** (what the boxes can honestly sense, where walls block), draws **zones** (Inner / Outer / Danger / Custom), and sets rules per zone: allowed hours, max dwell time, alert severity, night-mode. Example: *"Granny left the bed at 2 AM and lingered 12 minutes in the kitchen zone → hard alert to the caregiver dashboard."*
+
+**Judges will ask "what already exists?"** — honest answer, one line: *RuView (88.6K-star open-source project) proved WiFi sensing works; we ship the care product it never built — setup wizard, user-defined zones, policy engine, caregiver dashboard, BLE identity, B2B model.* We **stand on the MIT-licensed RuView stack with attribution** (hybrid strategy — see §3) and build the product layer ourselves.
+
+## 2. Why this wins (for you to say to the team)
+- **Privacy by physics**: no pixels ever exist — works in bedrooms/bathrooms where cameras can't go
+- **Device-free**: the person wears/carries nothing — every alternative (watches, tags, cameras) fails when the person won't participate
+- **The "already exists" test survives**: every software idea we surveyed is crowded; WiFi-CSI *productization for care* is an open lane — RuView is a developer platform, Origin Wireless is enterprise-priced
+- **Honest by design**: no fake numbers, no overpromised vitals — judges respect "we know our limits" (that's a strength in Q&A)
+
+## 3. Hybrid stack (what we take, what we build)
+| Layer | We leverage (MIT, attributed) | We build (our ownership) |
+|---|---|---|
+| Capture | RuView prebuilt ESP32-S3 CSI firmware (flash via esptool, no compile) + ADR-018 UDP frames | — |
+| Signals | RuView Python extractors: presence (82.3% published), breathing/HR (bandpass), fall signal | — |
+| Zones | — | Calibration-walk zone classifier (amplitude features), dwell/transition events |
+| Product | — | Setup wizard + capability map, zone policy engine, caregiver dashboard, BLE identity, alerts, multi-tenant API |
+| Simulation | RuView Docker simulated mode (backup) | `synthetic_stream.py` emitting identical ADR-018 frames (synthetic == real path) |
+
+**Why hybrid:** 8–10 days is too short to re-derive DSP that exists and is published; and the zone/product layer is exactly where we're differentiated. We're honest about both halves.
+
+## 4. Timeline (Aug 5 → Aug 13–15)
+| Day | Milestone | Owner |
+|---|---|---|
+| **T0 (TODAY)** | Order 3× ESP32-S3 SuperMini (before 2 PM IST); pay/collect ₹500/member; claim tasks | All |
+| T0–T2 | Synthetic stream + parser (C1), extractor integration (C2), dashboard on mock (E1–E3/E7) | ML / Frontend |
+| T2–T4 | Boards arrive (~Aug 7–9): flash (B1), provision (B2), mesh topology (B3), UDP verified (IP-1 by Aug 8) | Designer |
+| T4–T6 | Real-data training: presence first, zone calibration walk (C3–C5), vitals gated by 24 h verification | ML |
+| T6–T8 | Wizard + editors (E4/E8–E10) wired to D4/D11/D12; policy engine live; IP-2 by Aug 10 | All |
+| T8 | Full rehearsal (F4), demo video recorded (G2/G3) — **required** | All |
+| T9 | Deck + honest-limits dry run (G4/G5); submission QA (H) | All |
+| **Aug 13–15** | **Submit** (repo + deck + 3–5 min video) | Designer |
+
+## 5. Money (cost split — skin in the game)
+| Item | Qty | Unit | Total |
+|---|---|---|---|
+| ESP32-S3 SuperMini (Hubtronics, in stock, 2–4 day delivery) | 3 | ₹469 | ₹1,407 |
+| Shipping + misc (USB-C cables) | — | — | ~₹100 |
+| **Total** | | | **≈ ₹1,500** |
+| **Per member (3-way split)** | | | **₹500** |
+
+- **UPI ₹500 to the buyer TODAY** (order cutoff is 2 PM IST — the whole plan depends on this).
+- Buy orders the hardware; everyone's share is their skin in the game. No other costs planned (cloud = free tiers/localhost).
+- If a member can't pay today: say so now, we adjust (e.g., 2-box kit ₹1,000 split 2 ways) — **no silent changes**.
+
+## 6. Sign-off sheet
+| Name | Claims (task IDs) | Daily hrs (target 2–3) | Demo-day availability (Aug 12–15) | ₹500 sent ✔ | Sign |
+|---|---|---|---|---|---|
+| **(you)** | D1–D12, B1–B6, F, H | | | | |
+| **ML guy** | C1–C7 | | | | |
+| **Frontend guy** | E1–E10, G (video) | | | | |
+
+*Claim by editing TASKS.md (put your initial in the **By** column) and filling this row. Signing = committing to your claimed tasks and your hours.*
+
+## 7. Team rules
+1. **Honesty rule** — never fake a number, never fake a demo. Vitals claimed only after 24 h real-data verification; else "best-effort, labeled." (PROJECT_BRIEF §8)
+2. **Task-selection model** — anyone can claim anything; empty slots get assigned by ability then load; too hard for everyone → shrink scope, never fake.
+3. **Daily 15-min sync** — shipped / today / blocked. Rotating lead.
+4. **Dashboard never blocks** — frontend runs on synthetic/mock data from day 1; hardware is a bonus, not a dependency.
+5. **One repo, one contract** — all message formats in `CONTRACT.md` (F1); no private formats.
+6. **Demo video is required** — the submission portal asks for repo + demo video. Recorded Aug 12, replay-safe (never live-only).
+
+## 8. This week, each person delivers
+- **You (designer):** boards ordered + money collected (today) · firmware flashed by Aug 7 · backend D1–D12 by Aug 10 · integration F · submission H
+- **ML guy:** C1–C2 by Aug 7 · zone system C3–C5 + metrics C7 by Aug 10 · honest numbers in `metrics.md`
+- **Frontend guy:** dashboard E1–E3/E7 on mock data by Aug 7 · wizard/editors E4/E8–E10 by Aug 10 · demo video G by Aug 12
+
+## 9. What we're NOT doing (scope guards)
+- No heart-rate promises in Round 1 (experimental, labeled)
+- No fall "detection" claims — fall-risk patterns only (sudden-motion-then-stillness heuristic)
+- No multi-room precision beyond zones — zone bands are ±1–2 m fuzzy, per-room calibration required
+- No camera imagery anywhere; the radio-shadow view is a visualization, not pixels
+- No separate frontend exclusion — frontend guy owns the frontend; everything else is fair game via task selection
+
+*Any deviation from this plan gets raised at the daily sync — no silent pivots.*
