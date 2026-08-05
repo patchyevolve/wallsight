@@ -239,6 +239,7 @@ Auto-learns each room's RF fingerprint (walls, furniture), re-adapts daily, flag
 | 5 | 2-zone occupancy ("Kitchen occupied") | |
 | 6 | Zone-to-zone tracking (kitchen → hall trail) | |
 | 7 | BLE device detection ("phone in kitchen") | Passive sniff, no app on that device |
+| 8 | **Named identity** — registered BLE device → person name ("Rahul is in the kitchen", consent-based, zone-level) | Optional identity layer; device-free safety works without it |
 | 8 | Inside vs outside zone → different alert actions | Rules engine |
 | 9 | Radio-shadow activity view | Zone-energy heatmap + movement trail (full render) |
 | 10 | Self-calibration baseline | |
@@ -282,7 +283,8 @@ Auto-learns each room's RF fingerprint (walls, furniture), re-adapts daily, flag
 | "What's the accuracy?" | We publish our **own measured numbers** (e.g., "94% zone occupancy, 0 false positives in X-hour test"). |
 | "Through concrete floors?" | ❌ No — 2.4 GHz blocked by slabs. Boxes per floor, like Wi-Fi extenders. |
 | "Through how many walls?" | ~1 brick wall reliably; 2 marginal. Drywall (US homes) easier. |
-| "Can it identify WHO?" | ❌ No identity from CSI. Optional person-ID only via their phone's BLE MAC (consent-based). |
+| "Can it identify WHO?" | ❌ Not from CSI alone — anonymous by design. ✅ **With consent:** a registered BLE device (phone/band) is mapped to a name in the app → zone-level identity ("Rahul is in the kitchen"). Random-MAC phones handled by app pairing. Identity is an optional layer; safety alerts never depend on it. |
+| "Then you need a wearable?" | ❌ **No.** Safety core is fully device-free — presence/motion/breathing work with the person wearing NOTHING. Identity is optional and only works when someone carries their own phone/band. |
 | "Is the heatmap a camera?" | ❌ It's rendered **from radio data** — a visualization, not pixels. Nothing is recorded visually. |
 | "Can it localize the person precisely?" | ❌ **Room-level only.** The heatmap is zone-energy + movement trail, not true positioning — 2 RX boxes can't triangulate precisely. We never fake precision. |
 | "RuView already does this — why you?" | ✅ We know — 83K stars proves the tech. RuView is a free DIY edge platform (no app, no cloud, no India); **we ship the consumer product** around it. |
@@ -513,6 +515,7 @@ Judges have likely seen RuView's tech demos — but shipping it as an **India-ma
 | CSI flaky in room | Med | **Replay mode** — demo runs recorded data; live is bonus |
 | BLE + WiFi concurrency issues | Med | Time-shared scans; BLE is auxiliary not critical |
 | Heart rate fails live | High | Breathing is the star; HR labeled experimental |
+| **Breathing fails on OUR boards** | Med | **Verify within 24h of first stream (Aug 8):** ML runs respiration.py vs a real sitting person. If weak: presence/motion carry the demo, breathing labeled "best-effort," demo replays recorded data. Never fake a BPM |
 | ML guy's DSP port slips | Med | wifi-ghost ships runnable Python — port is configuration, not research |
 | Team time conflict | Med | Independent deliverables until integration day; 15-min daily sync |
 | Cloud tier limits | Med | Demo on localhost + screen recording; subscription architecture shown, not hosted at scale |

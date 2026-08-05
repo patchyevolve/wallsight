@@ -35,7 +35,7 @@
 |---|---|---|---|---|
 | C1 | Clone + run `heyfinal/wifi-ghost` Python DSP on its sample data; write 1-page notes on the math (input → steps → output) | `dsp_notes.md` | 3–5 | ☐ |
 | C2 | Motion detection: motion_score from CSI amplitude variance | detects a person walking ≤2 s, quiet when empty | 3–5 | ☐ |
-| C3 | Breathing detection: bandpass 0.1–0.5 Hz + sliding FFT → BPM | ~16 BPM ±2 on test data | 4–6 | ☐ |
+| C3 | Breathing detection: bandpass 0.1–0.5 Hz + sliding FFT → BPM | ~16 BPM ±2 on test data — **verify vs real person within 24h of boards arriving** | 4–6 | ☐ |
 | C4 | Heart rate (optional, experimental): bandpass 0.8–2.0 Hz | HR estimate, honestly labeled | 4–6 | ☐ |
 | C5 | Fusion: per-zone confidence voting (CSI + BLE), one event per state change | no duplicate events | 3–5 | ☐ |
 | C6 | Self-calibration: rolling empty-room baseline | baseline stable in <60 s | 2–3 | ☐ |
@@ -53,6 +53,8 @@
 | D6 | Multi-tenant/subscription structure (accounts + plans in API) | subscription-shaped API | 3–4 | ☐ |
 | D7 | Synthetic data generator: fake CSI frames for dev/testing without hardware | stream feeds backend | 1–2 | ☐ |
 | D8 | Deploy backend on free tier (Render/Railway) or keep localhost for demo | live URL or localhost script | 1–2 | ☐ |
+| D9 | **Identity layer:** `POST /v1/devices` (BLE MAC → name, consent-based), events include `person` field when matched | "Rahul is in the kitchen" | 2–3 | ☐ |
+| D10 | Wearable relay (optional): band/app health data (HR, steps) forwarded to backend as auxiliary signal | wearable data appears in events | 3–4 | ☐ |
 
 ## Section E — Dashboard & Frontend (what judges see)
 
