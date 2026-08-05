@@ -292,6 +292,7 @@ Auto-learns each room's RF fingerprint (walls, furniture), re-adapts daily, flag
 | "Does it need the person to carry anything?" | **No. Nothing. That's the entire point.** |
 | "Does it work if the person is perfectly still?" | Static presence works **near the line**; still-person detection off-axis is weak — honest limit. |
 | "Privacy?" | No camera/mic/wearable. Features-only streaming (raw CSI not stored), encrypted transport, retention controls, consent-based phone participation. |
+| **"Why this when every home already has cameras with motion detection?"** | **Different product class:** a camera answers *"what happened"* (forensics, after the fact, one FoV, fails at night/behind doors, no vitals, stores hackable pixels, family-hostile in bedrooms). WallSight answers *"is the person okay right now"* — through walls, in the dark, under the blanket: breathing, no-motion, zone breach. Privacy by physics — no image ever exists. Cost: one camera ≈ our whole-house kit. Honest concession: for thief *identification* cameras win — we're not replacing them, we fill the gap they can't touch, and "we tell you WHEN to look, not make you watch 24×7." |
 
 ---
 
