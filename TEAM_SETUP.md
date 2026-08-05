@@ -37,17 +37,23 @@ python backend/scripts/mock_ws.py   # mock event server so the UI never blocks
 ```
 Build against the mock first; swap the WebSocket URL to `/v1/live` once D2 lands.
 
-## 5. (Optional, boards arrived) Flash a box
+## 5. (Optional, boards arrived) Our firmware on a box
+
+We build our own firmware from the official Espressif CSI reference — see `firmware/README.md` for the full build guide.
+
 ```bash
-pip install esptool
-python -m esptool --chip esp32s3 --port /dev/ttyUSB0 --baud 460800 \
-  write_flash 0x0 bootloader.bin 0x8000 partition-table.bin \
-  0xf000 ota_data_initial.bin 0x20000 esp32-csi-node.bin
-python firmware/provision.py --port /dev/ttyUSB0 \
-  --ssid "YourWiFi" --password "secret" --target-ip 192.168.1.100
-# verify: UDP frames arriving on port 5005
+# One-time: install ESP-IDF v5.x + clone the reference
+# (do this BEFORE boards arrive — compiling needs no hardware)
+git clone --recursive -b v5.3 https://github.com/espressif/esp-idf.git
+./esp-idf/install.sh esp32s3
+# then: our firmware repo (firmware/) → idf.py set-target esp32s3 && idf.py build
+
+# Flash + monitor
+idf.py -p /dev/ttyUSB0 flash monitor
+# Verify: our ADR-018 frames arriving on UDP port 5005
 ```
-Firmware binaries: from the RuView ESP32-S3 release (MIT) — links in the repo `firmware/README.md`.
+
+Fallback only (if our firmware slips past Aug 9): flash the RuView prebuilt binary — links + commands in `firmware/README.md`.
 
 ## 6. Backup simulated data (optional)
 ```bash

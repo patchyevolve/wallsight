@@ -157,12 +157,13 @@ flowchart TB
 | Decision | Why |
 |---|---|
 | **Dumb boxes, smart cloud** | ₹470 nodes + zero edge compute → subscription business model works; processing scales server-side |
-| **3× ESP32-S3 for Round 1** | 1 illuminator + 2 receivers = 2 sensing links → zones + inside/outside behavior demo. **No ESP32-C3** — our firmware path (RuView) is S3-only (C3: single-core RISC-V, no PSRAM, no DSP headroom) |
-| **Hybrid stack (leverage + build)** | Leverage MIT-licensed **RuView** (88.6K★): prebuilt S3 CSI firmware (esptool flash, no compile), Python extractors — presence (82.3% published), breathing/HR, fall signal. **Build ourselves:** zone classifier (calibration walk), dwell/transition engine, zone policy engine, wizard + capability map, caregiver dashboard, BLE identity. We're honest about both halves; attribution in README/repo |
+| **3× ESP32-S3 for Round 1** | 1 illuminator + 2 receivers = 2 sensing links → zones + inside/outside behavior demo. **No ESP32-C3** (single-core RISC-V, no PSRAM, no DSP headroom) |
+| **Our own firmware, official reference base** | Built from the Espressif `esp-csi` reference example (vendor MIT code, not a mystery binary): CSI config, ADR-018 frame format, UDP streaming — **we control and understand every layer**, can debug and answer judge questions. Prebuilt RuView binary demoted to a 30-min fallback |
+| **Our DSP, published math** | Presence (phase-variance + motion-band power), breathing (0.1–0.5 Hz bandpass → BPM), HR (0.8–2.0 Hz, experimental), fall-risk heuristic — from published params (RuView docs + literature). RuView Python package = cross-check reference, not a dependency. Everything we claim is measured or cited |
 | **Python backend (not Rust)** | DSP lives in Python (`ruview` package + our zone model) — no porting cost; Rust gateway is optional, off critical path |
 | **Synthetic == real path** | `synthetic_stream.py` emits the identical ADR-018 UDP format the firmware sends → ML, backend and dashboard never care whether data is simulated or live; boards can arrive late without stalling anyone |
 | **Dashboard works on synthetic data from day 1** | Frontend never blocks on hardware; demo never depends on live accuracy |
-| **Ready-made firmware, not from scratch** | RuView prebuilt ESP32-S3 CSI binaries (MIT) → "flash + provision + stream" in ~30 min; fallback: `espressif/esp-csi` `csi_recv` example |
+| **Ready-made base, our own build** | Start from the official `espressif/esp-csi` reference example (MIT, vendor code) → we add our CSI config, ADR-018 serialization and UDP streaming. Toolchain + build before boards arrive; flash + debug the day they land. RuView prebuilt binary = fallback only |
 
 ---
 
@@ -300,7 +301,7 @@ Per-zone rules: **allowed hours · max dwell time · alert severity (soft/hard) 
 | Question | Honest answer |
 |---|---|
 | "Can it detect a fall?" | Only a *sudden-motion-then-stillness* heuristic — **not** a reliable fall detector. Labeled honestly. |
-| "What's the accuracy?" | Presence: leverages RuView's re-benchmarked **82.3% held-out temporal-triplet** (published, honest). Zone occupancy: **our own measured numbers** from calibration-run replays → `metrics.md` (task C7). Never a number we haven't measured. |
+| "What's the accuracy?" | Presence: phase-variance + motion-band power extractor, **cross-checked against RuView's re-benchmarked 82.3% held-out figure as reference** — we publish our own measured number on our data. Zone occupancy: **our own measured numbers** from calibration-run replays → `metrics.md` (task C7). Never a number we haven't measured. |
 | "How precise are the zones?" | ±1–2 m **fuzzy bands**, not coordinates. Grounding: even 400-AP enterprise ISAC systems report ~2.17 m median error — our 3-node mesh bands are honest-conservative. Zones need a per-room calibration walk. Zone-level localization on commodity ESP32s is validated in literature (CSI-Chain: 98.5% zone accuracy) — but we publish *our* measured number. |
 | "Through concrete floors?" | ❌ No — 2.4 GHz blocked by slabs. Boxes per floor, like Wi-Fi extenders. |
 | "Through how many walls?" | ~1 brick wall reliably; 2 marginal. Drywall (US homes) easier. |
@@ -308,7 +309,7 @@ Per-zone rules: **allowed hours · max dwell time · alert severity (soft/hard) 
 | "Then you need a wearable?" | ❌ **No.** Safety core is fully device-free — presence/motion/breathing work with the person wearing NOTHING. Identity is optional and only works when someone carries their own phone/band. |
 | "Is the heatmap a camera?" | ❌ It's rendered **from radio data** — a visualization, not pixels. Nothing is recorded visually. |
 | "Can it localize the person precisely?" | ❌ **Room-level only.** The heatmap is zone-energy + movement trail, not true positioning — 2 RX boxes can't triangulate precisely. We never fake precision. |
-| "RuView already does this — why you?" | ✅ We know — **88.6K stars**, and we say so on slide one. We **leverage** RuView (MIT, attributed): prebuilt S3 CSI firmware + presence/breathing/HR extractors. RuView is a free DIY *developer platform* — no setup wizard, no user-defined zones, no policy engine, no caregiver dashboard, no BLE identity, no care-home onboarding, no India/B2B play. **We ship the care product it never built.** Honest both halves: what we take, and what's ours. |
+| "RuView already does this — why you?" | ✅ We know — **88.6K stars**, and we say so on slide one. We build **our own firmware** (official Espressif `esp-csi` reference base) and **our own DSP** (published math: 0.1–0.5 Hz breathing, 0.8–2.0 Hz HR, phase-variance presence), cross-checking against RuView's published numbers — and we **ship the care product RuView never built**: setup wizard, user-defined zones, policy engine, caregiver dashboard, BLE identity, B2B onboarding. Honest about both halves: what we take from the ecosystem, and what's ours. |
 | "Is heart rate real?" | Research-grade, fragile in live demo → we demo **breathing** as the star; HR = experimental, labeled. Vitals are only claimed **after 24 h of real-data verification** on our boxes — else "best-effort, labeled." Never a fake BPM. |
 | "Range?" | ~10–15 ft per TX–RX pair. A per-room system, not outdoor/whole-building. |
 | "Why not a ₹5 PIR sensor?" | PIR: no through-wall, no breathing, no zones, no tracking, no data richness. Different product class. |
@@ -375,9 +376,9 @@ sequenceDiagram
 ### Repos to use (all open source)
 | Repo | What we take from it |
 |---|---|
-| `ruvnet/RuView` (88.6K★, MIT) | **Leveraged**: prebuilt ESP32-S3 CSI firmware (esptool flash, ADR-018 UDP frames) + Python extractors (presence 82.3% published, breathing/HR, fall signal) + Docker simulated mode (backup). Attribution in README |
-| `espressif/esp-csi` | Fallback firmware path (`csi_recv` example) if a prebuilt binary misbehaves |
-| `heyfinal/wifi-ghost` | Reference only — Python DSP ideas (superseded by RuView stack) |
+| `espressif/esp-csi` | **Our firmware base** (official vendor reference, MIT): `csi_recv` example → we add ADR-018 serialization + UDP streaming |
+| `ruvnet/RuView` (88.6K★, MIT) | **Reference + cross-check**: published DSP params (presence phase-variance, breathing 0.1–0.5 Hz, HR 0.8–2.0 Hz), prebuilt binary = 30-min fallback (B8), Docker simulated mode (backup). Attribution in README |
+| `heyfinal/wifi-ghost` | Reference only — Python DSP ideas |
 | `Adichapati/ThroughNet` | Reference only — multi-node fusion ideas |
 
 ### Skills in team
@@ -422,7 +423,7 @@ sequenceDiagram
 | **Gross margin** | ~90%+ at ₹499/mo |
 
 ### Competition framing (slide)
-*"RuView (88.6K stars, MIT) and Origin Wireless proved WiFi sensing works. We leverage RuView's open sensing stack with full attribution — and build the product layer neither of them ships: a setup wizard with an honest capability map, user-defined zones with policy rules, a caregiver dashboard, BLE identity, and a ₹1,500 kit + ₹199/mo care-home model. RuView is a DIY developer platform; Origin is enterprise-priced; we're the care product."*
+*"RuView (88.6K stars, MIT) and Origin Wireless proved WiFi sensing works. We build our own firmware (official Espressif CSI reference base) and our own DSP from published math — cross-checked against RuView's honest numbers — and ship the product layer neither of them ships: a setup wizard with an honest capability map, user-defined zones with policy rules, a caregiver dashboard, BLE identity, and a ₹1,500 kit + ₹199/mo care-home model. RuView is a DIY developer platform; Origin is enterprise-priced; we're the care product."*
 
 ---
 
@@ -464,11 +465,11 @@ sequenceDiagram
 
 | Date | Milestone |
 |---|---|
-| **Aug 5** | ✅ **Order boards NOW (today, 2 PM IST cutoff)** · collect ₹500/member · claim tasks |
+| **Aug 5** | ✅ **Order boards NOW (today, 2 PM IST cutoff)** · collect ₹500/member · claim tasks · **start ESP-IDF toolchain + our firmware build** (no hardware needed) |
 | **Aug 5** | ✅ Registration done (Aug 3) |
-| **Aug 7–9** | Boards arrive · flash prebuilt firmware (esptool) · CSI streams to backend |
-| **Aug 8** | IP-1: real boxes → backend parses · synthetic pipeline live from day 1 |
-| **Aug 10** | IP-2: backend events → dashboard live · zone system (calibration → classifier → policy) working |
+| **Aug 7–9** | Boards arrive · flash **our firmware** (esp-csi base) · CSI streams to backend |
+| **Aug 9** | IP-1: real boxes → backend parses · synthetic pipeline live from day 1 |
+| **Aug 11** | IP-2: backend events → dashboard live · zone system (calibration → classifier → policy) working |
 | **Aug 12** | Full rehearsal · **record demo video (required)** · refresh deck |
 | **Aug 13–15** | **Round 1 submission** (repo + deck + 3–5 min video) |
 | Aug 21–22 | Round 2 evaluation (if advanced) |
@@ -482,9 +483,10 @@ gantt
     Order boards + pay split     :a1, 2026-08-05, 1d
     Submit Round 1              :a2, 2026-08-13, 3d
     section Designer
-    Firmware flash + provision  :b1, 2026-08-07, 2d
-    Backend + policy engine     :b2, 2026-08-08, 3d
-    Integration + submission    :b3, 2026-08-11, 4d
+    Toolchain + our firmware build :b0, 2026-08-05, 2d
+    Flash + stream + topology      :b1, 2026-08-07, 3d
+    Backend + policy engine        :b2, 2026-08-08, 3d
+    Integration + submission       :b3, 2026-08-11, 4d
     section ML
     Parser + extractors         :c1, 2026-08-05, 3d
     Zone classifier + metrics   :c2, 2026-08-08, 4d
@@ -516,7 +518,7 @@ gantt
 | Elder/toddler safety as a consumer product (India) — tech proven by RuView, no one ships the product | **Product lane open** | **We build this** |
 
 ### Our direct lineage (algorithm-level)
-- **RuView** (88.6K★, MIT): the platform that proves WiFi sensing works — presence (82.3% re-benchmarked), breathing, HR on ESP32 meshes, fall signal, occupancy cogs. **We leverage it (attributed)** as our sensing stack and **build the care product layer** it never built: wizard + capability map, user-defined zones + policy engine, caregiver dashboard, BLE identity, B2B onboarding
+- **RuView** (88.6K★, MIT): the project that proved WiFi sensing works — presence, breathing, HR on ESP32 meshes. **We use it as reference + cross-check** (published DSP params; prebuilt binary as fallback only) and **build our own firmware + DSP** from the official Espressif CSI reference — plus the care product layer (wizard, zones, policies, dashboard, BLE identity, B2B) that no one ships
 - **CSI-Chain** (KSII, Mar 2026): zone-based localization 98.5% + HAR 95.8% on commodity ESP32s — validates our zone-classifier approach (amplitude features)
 - **ISAC large-scale study** (arXiv 2504.17173): median 2.17 m error even with 400+ APs — grounds our honest ±1–2 m zone-band limit
 - **Origin Wireless**: commercial enterprise WiFi sensing — expensive, not consumer, not India
@@ -530,10 +532,11 @@ Judges have likely seen RuView's tech demos — but **shipping it as a deployabl
 ## 17. Risks & Fallbacks
 
 | Risk | Probability | Mitigation |
-|---|---|---|---|
+|---|---|---|
+| **Our firmware doesn't stream by Aug 9** | Med | We own it (esp-csi reference base, B1–B2 buildable BEFORE boards arrive); if it slips past Aug 9 → flash RuView prebuilt (B8, 30 min) so boxes stream; fix ours after submission if needed |
 | Boards arrive late | Med | Order **Aug 5 (today, 2 PM cutoff)** — Hubtronics in stock, 2–4 day delivery; fallback = single board + home router mode; demo runs synthetic until real frames land |
 | Cost share not collected today | Low | ₹500/member due before order cutoff (TEAM_PLAN.md §5); if a member can't pay, adjust kit size — no silent changes |
-| RuView prebuilt firmware misbehaves on our boards | Low-Med | Fallback: `espressif/esp-csi` `csi_recv` example (IDF build, ~half a day); Docker simulated mode keeps the pipeline testable regardless |
+| RuView prebuilt binary misbehaves / we don't flash it | Low | It's fallback-only now (B8). Primary path: **our own firmware** from the official esp-csi reference — we control and debug every layer |
 | Zone accuracy weak on real data | Med | **Replay mode** — demo runs recorded/calibrated data; live is bonus. Metrics (C7) measured, never guessed; if zones fail: presence/fall carry the demo, zones labeled best-effort |
 | Breathing/HR fails on OUR boxes | Med | **Verify within 24h of first stream (Aug 8):** extractor vs a real sitting person. If weak: presence/fall/zones carry the demo, vitals labeled "best-effort," demo replays recorded data. Never fake a BPM |
 | BLE + WiFi concurrency issues | Med | Time-shared scans; BLE identity is auxiliary, never critical |
@@ -580,8 +583,8 @@ Judges have likely seen RuView's tech demos — but **shipping it as a deployabl
 ### Stack
 | Layer | Tech |
 |---|---|
-| Firmware | **RuView prebuilt ESP32-S3 CSI node binaries (MIT)** — esptool flash, ADR-018 UDP frames; fallback `espressif/esp-csi` `csi_recv` |
-| Signals | `ruview` Python package (presence 82.3% published, breathing/HR bandpass extractors, fall signal) + **our zone classifier** (calibration walk, amplitude features) |
+| Firmware | **Our ESP32-S3 CSI firmware** from the official `espressif/esp-csi` reference (MIT): CSI config, ADR-018 UDP frames; RuView prebuilt binary = fallback (B8) |
+| Signals | **Our extractors** from published math: presence (phase-variance), breathing (0.1–0.5 Hz → BPM), HR (0.8–2.0 Hz, experimental); RuView package = cross-check reference |
 | Backend | Python FastAPI + NumPy (ingest, zone policy engine D11, capability model D12, identity D9, multi-tenant D6) |
 | Real-time relay | WebSocket (`/v1/live`); optional Rust gateway — off critical path |
 | Frontend | React + TS, Canvas heatmap, wizard + room-map/zone/policy editors, alert feed, PWA |

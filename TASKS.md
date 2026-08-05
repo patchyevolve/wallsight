@@ -1,10 +1,12 @@
-# WALLSIGHT — Task Selection Sheet (Round 1, v2 — hybrid stack + zones)
+# WALLSIGHT — Task Selection Sheet (Round 1, v3 — own firmware + hybrid DSP)
 
 > **How this works:** the project is split into sections. Every task has an ID, what to produce, effort, and skills it *ideally* needs. **You pick what you can do** — put your initial in the **By** column. Tasks nobody takes get assigned at the next sync. Nobody is forced; no task is "someone else's problem" if it's empty.
 >
 > **Read first:** `PROJECT_BRIEF.md` (idea, physics, features, honest limits, demo script §13, pitch §19) then `TEAM_PLAN.md` (costs, sign-off, timeline — **includes the ₹500/member hardware split, due TODAY before the 2 PM order cutoff**).
 >
-> **Hard deadlines (non-negotiable):** Boards ordered **Aug 5 (TODAY, before 2 PM IST)** · Boxes streaming CSI **by Aug 8** · End-to-end system live **by Aug 10** · Demo video recorded **Aug 12** · Submission **Aug 13–15** (video is REQUIRED — the platform asks for repo + demo video).
+> **Hard deadlines (non-negotiable):** Boards ordered **Aug 5 (TODAY, before 2 PM IST)** · Our firmware flashing **Aug 7–9** · Boxes streaming CSI **by Aug 9** · End-to-end system live **by Aug 11** · Demo video recorded **Aug 12** · Submission **Aug 13–15** (video is REQUIRED — the platform asks for repo + demo video).
+>
+> **Firmware stance (v3):** we **build our own ESP32-S3 firmware** from the official Espressif `esp-csi` reference example — we control and understand every layer. RuView's prebuilt binary is demoted to a **30-minute fallback** (B8) if ours slips past Aug 9.
 
 ---
 
@@ -18,32 +20,34 @@
 | A4 | Daily 15-min sync (shipped / today / blocked) | — | 0.25/day | ☐ (rotating lead) |
 | A5 | Keep this sheet updated: claim tasks, tick done | — | 0.1/day | ☐ |
 
-## Section B — Hardware Bring-up (3× ESP32-S3 boxes)
+## Section B — Hardware & Firmware (3× ESP32-S3 boxes — OURS)
 
-> Firmware is **prebuilt** (RuView CSI node, MIT, flashed via esptool — no ESP-IDF build needed). Fallback if a binary misbehaves: `espressif/esp-csi` `csi_recv` example (needs IDF toolchain, B7).
+> **We build the firmware ourselves** from the official `espressif/esp-csi` reference (MIT, vendor code) — full ownership of CSI config, frame format, UDP stream. Toolchain + build happen BEFORE boards arrive (compiling needs no hardware). Prebuilt RuView binary = 30-min fallback (B8).
 
 | ID | Task | Output | ~Hrs | By |
 |---|---|---|---|---|
-| B1 | Flash prebuilt RuView ESP32-S3 CSI firmware on all 3 boards (esptool: bootloader + partition-table + ota_data + csi-node bin) | boards flash, serial shows `csi_collector` lines | 1 | ☐ |
-| B2 | Provision WiFi + aggregator IP (`provision.py`), verify UDP frames arrive on laptop (port 5005) | real ADR-018 frames captured | 1 | ☐ |
-| B3 | 3-node mesh topology: pick 1 illuminator node + 2 receiver nodes (or home-router illuminator mode) | CSI flowing on 2 links | 1–2 | ☐ |
-| B4 | BLE scanner on nodes (phones detected: RSSI + name) — feeds identity layer (D9) | BLE device list in output | 2–3 | ☐ |
-| B5 | Fallback: single node + home router as illuminator | presence works without a 2nd box | 1–2 | ☐ |
-| B6 | Box placement in demo venue per coverage check (capability model D12 output) | placement plan executed | 1 | ☐ |
+| B1 | Install ESP-IDF v5.x toolchain + clone `espressif/esp-csi`; build the stock `csi_recv` example for ESP32-S3 | `idf.py build` passes (no hardware needed) | 2–4 | ☐ |
+| B2 | **Our CSI firmware**: adapt `csi_recv` reference → enable CSI on S3 (HT20, ~20 Hz), serialize ADR-018-compatible frames (magic + node id + subcarriers + RSSI + I/Q), stream over UDP to aggregator IP:port | our firmware builds; format matches synthetic generator | 4–8 | ☐ |
+| B3 | Flash all 3 boards + provision WiFi (NVS or flash-time config); verify UDP frames arrive (port 5005) | real ADR-018 frames captured | 1–2 | ☐ |
+| B4 | 3-node topology: 1 illuminator node + 2 receivers (or router-illuminator mode) | CSI flowing on 2 links | 1–2 | ☐ |
+| B5 | Single-node + home-router illuminator mode (bring-up fallback) | presence works without a 2nd box | 1–2 | ☐ |
+| B6 | BLE scanner task on nodes (phones: RSSI + name) — feeds identity layer (D9) | BLE device list in output | 2–3 | ☐ |
+| B7 | Box placement in demo venue per coverage check (capability model D12) | placement plan executed | 1 | ☐ |
+| B8 | **Fallback only:** flash RuView prebuilt binary if our firmware slips past Aug 9 | boxes streaming either way | 0.5 | ☐ |
 
-## Section C — Signal Processing & ML (hybrid: leverage + build)
+## Section C — Signal Processing & ML (hybrid: our DSP + reference)
 
-> **Hybrid strategy:** leverage the MIT-licensed RuView stack for proven signals (presence 82.3% published, breathing/HR extractors, fall signal) with attribution — **build ourselves** the zone system (our differentiator): calibration walk → zone features → zone classifier → dwell/transition events.
+> **Our DSP, informed by published math:** breathing bandpass 0.1–0.5 Hz, HR 0.8–2.0 Hz, presence via phase-variance/motion-band power (params from RuView docs + literature). RuView Python package = reference + cross-check, not a dependency. Everything we claim, we measured or cite.
 
 | ID | Task | Output | ~Hrs | By |
 |---|---|---|---|---|
 | C1 | ADR-018 frame parser (Python, UDP) + `synthetic_stream.py` emitting the SAME frame format | parser + generator tested back-to-back | 3–4 | ☐ |
-| C2 | Integrate RuView extractors (presence / breathing / HR) into backend; honest labels ("benchmark 82.3% presence") | presence + BPM + HR stream | 3–5 | ☐ |
+| C2 | Our extractors: presence (phase-variance + motion-band power), breathing (0.1–0.5 Hz bandpass → BPM), HR (0.8–2.0 Hz, experimental); cross-check vs RuView package | presence + BPM + HR stream, honest labels | 4–6 | ☐ |
 | C3 | **Calibration-walk capture** + zone feature extraction (per-pair amplitude/RSSI stats per window) | labeled zone dataset + feature script | 4–6 | ☐ |
 | C4 | **Zone classifier** — kNN/centroid baseline first, small CNN if time (amplitude features, CSI-Chain-style) | per-zone inference service | 4–6 | ☐ |
 | C5 | Dwell/transition event generator: zone time-series → enter/exit/dwell/transition events | event stream feeds D11 | 3–4 | ☐ |
 | C6 | Self-calibration: rolling empty-room baseline | baseline stable <60 s | 2–3 | ☐ |
-| C7 | Accuracy metrics on recorded runs: precision/recall per zone + presence vs benchmark → REAL numbers | `metrics.md` | 3–4 | ☐ |
+| C7 | Accuracy metrics on recorded runs: precision/recall per zone + presence vs reference → REAL numbers | `metrics.md` | 3–4 | ☐ |
 
 ## Section D — Backend & Cloud
 
@@ -82,8 +86,8 @@
 | ID | Task | Output | ~Hrs | By |
 |---|---|---|---|---|
 | F1 | Define frame→event→alert message format (one shared spec, everyone reads it) | `CONTRACT.md` | 1–2 | ☐ |
-| F2 | **IP-1 test:** boxes stream real frames → backend parses (by Aug 8) | health shows real boxes | 2 | ☐ |
-| F3 | **IP-2 test:** backend events → dashboard live (by Aug 10) | live zones on screen | 2 | ☐ |
+| F2 | **IP-1 test:** boxes stream real frames → backend parses (by Aug 9) | health shows real boxes | 2 | ☐ |
+| F3 | **IP-2 test:** backend events → dashboard live (by Aug 11) | live zones on screen | 2 | ☐ |
 | F4 | Full-system rehearsal: wizard → zones → synthetic night scene → alert (PROJECT_BRIEF §13) with recorded fallback | scenes pass | 3 | ☐ |
 
 ## Section G — Demo, Video & Pitch (video REQUIRED)
@@ -109,7 +113,7 @@
 
 ## What matters most (priority order)
 1. **A1 boards ordered TODAY (2 PM cutoff)** + A2 money collected — everything else flexes around hardware arrival
-2. **B1–B4 + C1–C2 + D1 + E1–E2** — minimum vertical slice: boxes → backend → presence → screen
+2. **B1–B3 + C1–C2 + D1 + E1–E2** — minimum vertical slice: our firmware → backend → presence → screen
 3. **C3–C5 + D11–D12 + E4/E8–E10** — the zone system: our differentiator (nothing care-shaped exists upstream)
 4. **C7 metrics + G5 honest limits** — credibility for judges
 5. **G2/G3 video + H2 submission** — the actual deliverable (video required)

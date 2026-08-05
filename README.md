@@ -16,14 +16,16 @@
 - Breathing rate (honest: verified on our boxes before claimed) · BLE-based named identity (consent-based, optional) · fall-risk patterns (heuristic, labeled)
 - Care-home B2B model: ₹1,500 kit + subscription
 
-## Stack (hybrid — leverage + build)
-- **Leveraged (MIT, attributed):** [RuView](https://github.com/ruvnet/RuView) prebuilt ESP32-S3 CSI firmware (ADR-018 UDP frames) + Python extractors (presence 82.3% published, breathing/HR)
-- **Built by us:** zone classifier (60-s calibration walk, amplitude features), dwell/transition events, zone policy engine, setup wizard + capability map, caregiver dashboard, BLE identity, multi-tenant API
+## Stack (we own every layer)
+- **Firmware (ours):** built from the official Espressif `esp-csi` reference (MIT vendor code) — CSI config, ADR-018 UDP frames; RuView prebuilt binary = 30-min fallback only
+- **DSP (ours):** extractors from published math — presence (phase-variance), breathing (0.1–0.5 Hz), HR (0.8–2.0 Hz, experimental); [RuView](https://github.com/ruvnet/RuView) = reference + cross-check, attributed
+- **Product (ours):** zone classifier (60-s calibration walk), dwell/transition events, zone policy engine, setup wizard + capability map, caregiver dashboard, BLE identity, multi-tenant API
 
 ## Status
 - [x] Registration (Aug 3) · Idea + brief + pitch deck · Repo live
 - [ ] Hardware ordered (**Aug 5, 2 PM IST cutoff**) — 3× ESP32-S3 SuperMini
-- [ ] Boxes streaming CSI (by Aug 8)
-- [ ] End-to-end system live incl. zones (by Aug 10)
+- [ ] ESP-IDF toolchain + our firmware builds (before boards arrive)
+- [ ] Boxes streaming CSI (by Aug 9)
+- [ ] End-to-end system live incl. zones (by Aug 11)
 - [ ] Demo video (**required** — recorded Aug 12)
 - [ ] Round 1 submission (Aug 13–15)

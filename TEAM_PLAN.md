@@ -21,28 +21,30 @@ WallSight is a **camera-free care-home monitoring system**: 3 plug-in WiFi boxes
 - **The "already exists" test survives**: every software idea we surveyed is crowded; WiFi-CSI *productization for care* is an open lane — RuView is a developer platform, Origin Wireless is enterprise-priced
 - **Honest by design**: no fake numbers, no overpromised vitals — judges respect "we know our limits" (that's a strength in Q&A)
 
-## 3. Hybrid stack (what we take, what we build)
-| Layer | We leverage (MIT, attributed) | We build (our ownership) |
+## 3. Stack (what we own, what we reference)
+| Layer | We OWN (built by us) | Reference / fallback (attributed) |
 |---|---|---|
-| Capture | RuView prebuilt ESP32-S3 CSI firmware (flash via esptool, no compile) + ADR-018 UDP frames | — |
-| Signals | RuView Python extractors: presence (82.3% published), breathing/HR (bandpass), fall signal | — |
-| Zones | — | Calibration-walk zone classifier (amplitude features), dwell/transition events |
-| Product | — | Setup wizard + capability map, zone policy engine, caregiver dashboard, BLE identity, alerts, multi-tenant API |
-| Simulation | RuView Docker simulated mode (backup) | `synthetic_stream.py` emitting identical ADR-018 frames (synthetic == real path) |
+| Firmware | **Our ESP32-S3 CSI firmware** from the official Espressif `esp-csi` reference example (MIT vendor code): CSI config, ADR-018 frame format, UDP streaming — we control and understand every layer | RuView prebuilt binary = 30-min fallback if ours slips past Aug 9 |
+| Signals | Our extractors from published math: presence (phase-variance + motion-band power), breathing (0.1–0.5 Hz bandpass → BPM), HR (0.8–2.0 Hz, experimental), fall-risk heuristic | RuView Python package = cross-check reference for verification |
+| Zones | Calibration-walk zone classifier (amplitude features), dwell/transition events | CSI-Chain literature (98.5% zone accuracy — validates approach) |
+| Product | Setup wizard + capability map, zone policy engine, caregiver dashboard, BLE identity, alerts, multi-tenant API | — |
+| Simulation | `synthetic_stream.py` emitting identical ADR-018 frames (synthetic == real path) | RuView Docker simulated mode (backup) |
 
-**Why hybrid:** 8–10 days is too short to re-derive DSP that exists and is published; and the zone/product layer is exactly where we're differentiated. We're honest about both halves.
+**Why own the firmware:** a prebuilt binary is a black box — if frames don't flow we can't debug it, and we can't answer "how does it work?" honestly. Building from the official Espressif reference (vendor example code, not a mystery binary) gives us ownership with a documented base. Toolchain + build start TODAY — compiling needs no hardware; flash+debug starts the day boards arrive.
 
 ## 4. Timeline (Aug 5 → Aug 13–15)
 | Day | Milestone | Owner |
 |---|---|---|
-| **T0 (TODAY)** | Order 3× ESP32-S3 SuperMini (before 2 PM IST); pay/collect ₹500/member; claim tasks | All |
-| T0–T2 | Synthetic stream + parser (C1), extractor integration (C2), dashboard on mock (E1–E3/E7) | ML / Frontend |
-| T2–T4 | Boards arrive (~Aug 7–9): flash (B1), provision (B2), mesh topology (B3), UDP verified (IP-1 by Aug 8) | Designer |
+| **T0 (TODAY)** | Order 3× ESP32-S3 SuperMini (before 2 PM IST); pay/collect ₹500/member; claim tasks; **start ESP-IDF toolchain install** (B1 — no hardware needed) | All |
+| T0–T2 | Our firmware build (B1–B2), synthetic stream + parser (C1), extractors (C2), dashboard on mock (E1–E3/E7) | Designer / ML / Frontend |
+| T2–T4 | Boards arrive (~Aug 7–9): flash our firmware (B3), topology (B4), UDP verified → IP-1 by **Aug 9** | Designer |
 | T4–T6 | Real-data training: presence first, zone calibration walk (C3–C5), vitals gated by 24 h verification | ML |
-| T6–T8 | Wizard + editors (E4/E8–E10) wired to D4/D11/D12; policy engine live; IP-2 by Aug 10 | All |
+| T6–T8 | Wizard + editors (E4/E8–E10) wired to D4/D11/D12; policy engine live; IP-2 by **Aug 11** | All |
 | T8 | Full rehearsal (F4), demo video recorded (G2/G3) — **required** | All |
 | T9 | Deck + honest-limits dry run (G4/G5); submission QA (H) | All |
 | **Aug 13–15** | **Submit** (repo + deck + 3–5 min video) | Designer |
+
+**Fallback:** if our firmware isn't streaming by Aug 9, flash the RuView prebuilt binary (30 min, B8) — boxes stream either way, and we fix our firmware after submission if needed.
 
 ## 5. Money (cost split — skin in the game)
 | Item | Qty | Unit | Total |
@@ -74,7 +76,7 @@ WallSight is a **camera-free care-home monitoring system**: 3 plug-in WiFi boxes
 6. **Demo video is required** — the submission portal asks for repo + demo video. Recorded Aug 12, replay-safe (never live-only).
 
 ## 8. This week, each person delivers
-- **You (designer):** boards ordered + money collected (today) · firmware flashed by Aug 7 · backend D1–D12 by Aug 10 · integration F · submission H
+- **You (designer):** boards ordered + money collected (today) · ESP-IDF toolchain + our firmware built (B1–B2, by Aug 7) · firmware flashed + streaming (B3–B4, by Aug 9) · backend D1–D12 by Aug 11 · integration F · submission H
 - **ML guy:** C1–C2 by Aug 7 · zone system C3–C5 + metrics C7 by Aug 10 · honest numbers in `metrics.md`
 - **Frontend guy:** dashboard E1–E3/E7 on mock data by Aug 7 · wizard/editors E4/E8–E10 by Aug 10 · demo video G by Aug 12
 
