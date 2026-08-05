@@ -365,7 +365,7 @@ sequenceDiagram
 
 ## 11. What We Need
 
-### Buy (ORDER TODAY — **Aug 5**, before 2 PM IST for same-day dispatch; 2–4 day shipping)
+### Buy (ORDER RIGHT AFTER TEAM SIGN-OFF — **Aug 5–6**; 2–4 day shipping → arrive ~Aug 8–10)
 - **3× ESP32-S3 SuperMini** (Hubtronics.in ~₹469 each; ₹500/member split — see TEAM_PLAN.md)
 - USB-C cables
 
@@ -465,12 +465,11 @@ sequenceDiagram
 
 | Date | Milestone |
 |---|---|
-| **Aug 5** | ✅ **Order boards NOW (today, 2 PM IST cutoff)** · collect ₹500/member · claim tasks · **start ESP-IDF toolchain + our firmware build** (no hardware needed) |
+| **Aug 5–6** | ✅ **Team sign-off → order boards immediately after** (same-day window missed; 2–4 day delivery → arrive ~Aug 8–10) · collect ₹500/member · claim tasks · **start ESP-IDF toolchain + our firmware build** (no hardware needed) |
 | **Aug 5** | ✅ Registration done (Aug 3) |
-| **Aug 7–9** | Boards arrive · flash **our firmware** (esp-csi base) · CSI streams to backend |
-| **Aug 9** | IP-1: real boxes → backend parses · synthetic pipeline live from day 1 |
-| **Aug 11** | IP-2: backend events → dashboard live · zone system (calibration → classifier → policy) working |
-| **Aug 12** | Full rehearsal · **record demo video (required)** · refresh deck |
+| **Aug 8–10** | Boards arrive · flash **our firmware** (esp-csi base) · CSI streams to backend |
+| **Aug 10** | IP-1: real boxes → backend parses · synthetic pipeline live from day 1 |
+| **Aug 12** | IP-2: backend events → dashboard live · zone system (calibration → classifier → policy) working · full rehearsal · **record demo video (required, replay-safe)** · refresh deck |
 | **Aug 13–15** | **Round 1 submission** (repo + deck + 3–5 min video) |
 | Aug 21–22 | Round 2 evaluation (if advanced) |
 | Aug 28–30 | Round 3 finals (if advanced) |
@@ -483,10 +482,10 @@ gantt
     Order boards + pay split     :a1, 2026-08-05, 1d
     Submit Round 1              :a2, 2026-08-13, 3d
     section Designer
-    Toolchain + our firmware build :b0, 2026-08-05, 2d
-    Flash + stream + topology      :b1, 2026-08-07, 3d
-    Backend + policy engine        :b2, 2026-08-08, 3d
-    Integration + submission       :b3, 2026-08-11, 4d
+    Toolchain + our firmware build :b0, 2026-08-05, 3d
+    Flash + stream + topology      :b1, 2026-08-08, 3d
+    Backend + policy engine        :b2, 2026-08-08, 4d
+    Integration + submission       :b3, 2026-08-12, 3d
     section ML
     Parser + extractors         :c1, 2026-08-05, 3d
     Zone classifier + metrics   :c2, 2026-08-08, 4d

@@ -23,9 +23,9 @@
 
 ## Status
 - [x] Registration (Aug 3) · Idea + brief + pitch deck · Repo live
-- [ ] Hardware ordered (**Aug 5, 2 PM IST cutoff**) — 3× ESP32-S3 SuperMini
+- [ ] Hardware ordered (after team sign-off — Aug 5–6, 3× ESP32-S3 SuperMini)
 - [ ] ESP-IDF toolchain + our firmware builds (before boards arrive)
-- [ ] Boxes streaming CSI (by Aug 9)
-- [ ] End-to-end system live incl. zones (by Aug 11)
-- [ ] Demo video (**required** — recorded Aug 12)
+- [ ] Boxes streaming CSI (by Aug 10)
+- [ ] End-to-end system live incl. zones (by Aug 12)
+- [ ] Demo video (**required**, replay-safe — recorded Aug 12)
 - [ ] Round 1 submission (Aug 13–15)

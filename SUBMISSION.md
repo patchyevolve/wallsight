@@ -17,9 +17,9 @@
 | Project brief (backup doc) | ✅ | [PROJECT_BRIEF.md](PROJECT_BRIEF.md) |
 
 ## Round 1 checklist
-- [ ] Hardware ordered (**Aug 5**, 2 PM cutoff) + ₹500/member paid (TEAM_PLAN.md)
+- [ ] Hardware ordered after team sign-off (Aug 5–6) + ₹500/member paid (TEAM_PLAN.md)
 - [ ] Repo public + pushed (live)
-- [ ] Boxes streaming CSI (by Aug 8) · e2e incl. zones (by Aug 10)
+- [ ] Boxes streaming CSI (by Aug 10) · e2e incl. zones (by Aug 12)
 - [ ] Demo video recorded (Aug 12 — **required**)
-- [ ] Deck refreshed with zones + hybrid stack (G4)
+- [ ] Deck refreshed with zones + own-firmware stack (G4)
 - [ ] Submit Aug 13–15

@@ -35,16 +35,16 @@ WallSight is a **camera-free care-home monitoring system**: 3 plug-in WiFi boxes
 ## 4. Timeline (Aug 5 → Aug 13–15)
 | Day | Milestone | Owner |
 |---|---|---|
-| **T0 (TODAY)** | Order 3× ESP32-S3 SuperMini (before 2 PM IST); pay/collect ₹500/member; claim tasks; **start ESP-IDF toolchain install** (B1 — no hardware needed) | All |
+| **T0 (Aug 5–6)** | **Team sign-off + order 3× ESP32-S3 SuperMini** (same-day window missed — delivery 2–4 days → arrive ~Aug 8–10); collect ₹500/member; claim tasks; **start ESP-IDF toolchain install** (B1 — no hardware needed) | All |
 | T0–T2 | Our firmware build (B1–B2), synthetic stream + parser (C1), extractors (C2), dashboard on mock (E1–E3/E7) | Designer / ML / Frontend |
-| T2–T4 | Boards arrive (~Aug 7–9): flash our firmware (B3), topology (B4), UDP verified → IP-1 by **Aug 9** | Designer |
+| T2–T4 | Boards arrive (~Aug 8–10): flash our firmware (B3), topology (B4), UDP verified → IP-1 by **Aug 10** | Designer |
 | T4–T6 | Real-data training: presence first, zone calibration walk (C3–C5), vitals gated by 24 h verification | ML |
-| T6–T8 | Wizard + editors (E4/E8–E10) wired to D4/D11/D12; policy engine live; IP-2 by **Aug 11** | All |
-| T8 | Full rehearsal (F4), demo video recorded (G2/G3) — **required** | All |
+| T6–T8 | Wizard + editors (E4/E8–E10) wired to D4/D11/D12; policy engine live; IP-2 by **Aug 12** | All |
+| T8 | Full rehearsal (F4), demo video recorded (G2/G3) — **required**, replay-safe by design | All |
 | T9 | Deck + honest-limits dry run (G4/G5); submission QA (H) | All |
 | **Aug 13–15** | **Submit** (repo + deck + 3–5 min video) | Designer |
 
-**Fallback:** if our firmware isn't streaming by Aug 9, flash the RuView prebuilt binary (30 min, B8) — boxes stream either way, and we fix our firmware after submission if needed.
+**Fallback:** if our firmware isn't streaming by Aug 10, flash the RuView prebuilt binary (30 min, B8) — boxes stream either way, and we fix our firmware after submission if needed. The demo video is replay-safe (recorded data + synthetic), so a late board arrival never jeopardizes submission.
 
 ## 5. Money (cost split — skin in the game)
 | Item | Qty | Unit | Total |
@@ -54,7 +54,7 @@ WallSight is a **camera-free care-home monitoring system**: 3 plug-in WiFi boxes
 | **Total** | | | **≈ ₹1,500** |
 | **Per member (3-way split)** | | | **₹500** |
 
-- **UPI ₹500 to the buyer TODAY** (order cutoff is 2 PM IST — the whole plan depends on this).
+- **UPI ₹500 to the buyer right after the team signs off** — the order goes out the moment everyone confirms (delivery 2–4 days → arrives ~Aug 8–10).
 - Buy orders the hardware; everyone's share is their skin in the game. No other costs planned (cloud = free tiers/localhost).
 - If a member can't pay today: say so now, we adjust (e.g., 2-box kit ₹1,000 split 2 ways) — **no silent changes**.
 
@@ -76,9 +76,9 @@ WallSight is a **camera-free care-home monitoring system**: 3 plug-in WiFi boxes
 6. **Demo video is required** — the submission portal asks for repo + demo video. Recorded Aug 12, replay-safe (never live-only).
 
 ## 8. This week, each person delivers
-- **You (designer):** boards ordered + money collected (today) · ESP-IDF toolchain + our firmware built (B1–B2, by Aug 7) · firmware flashed + streaming (B3–B4, by Aug 9) · backend D1–D12 by Aug 11 · integration F · submission H
-- **ML guy:** C1–C2 by Aug 7 · zone system C3–C5 + metrics C7 by Aug 10 · honest numbers in `metrics.md`
-- **Frontend guy:** dashboard E1–E3/E7 on mock data by Aug 7 · wizard/editors E4/E8–E10 by Aug 10 · demo video G by Aug 12
+- **You (designer):** team sign-off + boards ordered + money collected (Aug 5–6) · ESP-IDF toolchain + our firmware built (B1–B2, by Aug 8) · firmware flashed + streaming (B3–B4, by Aug 10) · backend D1–D12 by Aug 12 · integration F · submission H
+- **ML guy:** C1–C2 by Aug 8 · zone system C3–C5 + metrics C7 by Aug 11 · honest numbers in `metrics.md`
+- **Frontend guy:** dashboard E1–E3/E7 on mock data by Aug 8 · wizard/editors E4/E8–E10 by Aug 11 · demo video G by Aug 12
 
 ## 9. What we're NOT doing (scope guards)
 - No heart-rate promises in Round 1 (experimental, labeled)

@@ -4,7 +4,7 @@
 >
 > **Read first:** `PROJECT_BRIEF.md` (idea, physics, features, honest limits, demo script §13, pitch §19) then `TEAM_PLAN.md` (costs, sign-off, timeline — **includes the ₹500/member hardware split, due TODAY before the 2 PM order cutoff**).
 >
-> **Hard deadlines (non-negotiable):** Boards ordered **Aug 5 (TODAY, before 2 PM IST)** · Our firmware flashing **Aug 7–9** · Boxes streaming CSI **by Aug 9** · End-to-end system live **by Aug 11** · Demo video recorded **Aug 12** · Submission **Aug 13–15** (video is REQUIRED — the platform asks for repo + demo video).
+> **Hard deadlines (non-negotiable):** Boards ordered **right after team sign-off (Aug 5–6)** · Our firmware flashing **Aug 8–10** · Boxes streaming CSI **by Aug 10** · End-to-end system live **by Aug 12** · Demo video recorded **Aug 12** (replay-safe) · Submission **Aug 13–15** (video is REQUIRED — the platform asks for repo + demo video).
 >
 > **Firmware stance (v3):** we **build our own ESP32-S3 firmware** from the official Espressif `esp-csi` reference example — we control and understand every layer. RuView's prebuilt binary is demoted to a **30-minute fallback** (B8) if ours slips past Aug 9.
 
@@ -14,7 +14,7 @@
 
 | ID | Task | Output | ~Hrs | By |
 |---|---|---|---|---|
-| A1 | **Order 3× ESP32-S3 SuperMini TODAY before 2 PM IST** (Hubtronics ₹469 each, in stock, 2–4 day delivery; order screenshot in group) | order screenshot | 0.5 | ☐ |
+| A1 | **Order 3× ESP32-S3 SuperMini after team sign-off (Aug 5–6)** — Hubtronics ₹469 each, in stock, 2–4 day delivery → arrive ~Aug 8–10; order screenshot in group | order screenshot | 0.5 | ☐ |
 | A2 | Collect cost share: **₹500/member** (UPI to buyer) — see TEAM_PLAN.md sign-off sheet | 3× ₹500 = ₹1,500 | 0.2 | ☐ |
 | A3 | Decide demo venue + box placement (3 nodes: 1 illuminator + 2 receivers; power points) | one-paragraph plan | 1 | ☐ |
 | A4 | Daily 15-min sync (shipped / today / blocked) | — | 0.25/day | ☐ (rotating lead) |
@@ -86,8 +86,8 @@
 | ID | Task | Output | ~Hrs | By |
 |---|---|---|---|---|
 | F1 | Define frame→event→alert message format (one shared spec, everyone reads it) | `CONTRACT.md` | 1–2 | ☐ |
-| F2 | **IP-1 test:** boxes stream real frames → backend parses (by Aug 9) | health shows real boxes | 2 | ☐ |
-| F3 | **IP-2 test:** backend events → dashboard live (by Aug 11) | live zones on screen | 2 | ☐ |
+| F2 | **IP-1 test:** boxes stream real frames → backend parses (by Aug 10) | health shows real boxes | 2 | ☐ |
+| F3 | **IP-2 test:** backend events → dashboard live (by Aug 12) | live zones on screen | 2 | ☐ |
 | F4 | Full-system rehearsal: wizard → zones → synthetic night scene → alert (PROJECT_BRIEF §13) with recorded fallback | scenes pass | 3 | ☐ |
 
 ## Section G — Demo, Video & Pitch (video REQUIRED)
@@ -112,7 +112,7 @@
 ---
 
 ## What matters most (priority order)
-1. **A1 boards ordered TODAY (2 PM cutoff)** + A2 money collected — everything else flexes around hardware arrival
+1. **Team sign-off + A1 boards ordered (Aug 5–6)** + A2 money collected — everything else flexes around hardware arrival
 2. **B1–B3 + C1–C2 + D1 + E1–E2** — minimum vertical slice: our firmware → backend → presence → screen
 3. **C3–C5 + D11–D12 + E4/E8–E10** — the zone system: our differentiator (nothing care-shaped exists upstream)
 4. **C7 metrics + G5 honest limits** — credibility for judges
